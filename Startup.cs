@@ -15,6 +15,9 @@ namespace BlogPostsManagementSystem
         {
             services.AddDbContextFactory<ApplicationDbContext>(
                 options => options.UseInMemoryDatabase("BlogsManagement"));
+
+            services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
