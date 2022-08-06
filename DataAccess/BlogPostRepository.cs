@@ -19,22 +19,18 @@ namespace BlogPostsManagementSystem.DataAccess
                     .EnsureCreated();
             }
         }
-        public List<BlogPost> GetBlogPosts()
+        public async Task<List<BlogPost>> GetAllAsync()
         {
-            using (var applicationDbContext =
-                   _dbContextFactory.CreateDbContext())
+            using (var applicationDbContext = await _dbContextFactory.CreateDbContextAsync())
             {
-                return applicationDbContext
-                    .BlogPosts.ToList();
+                return await applicationDbContext.BlogPosts.ToListAsync();
             }
         }
-        public BlogPost GetBlogPostById(int id)
+        public async Task<BlogPost> GetByIdAsync(int id)
         {
-            using (var applicationDbContext =
-                   _dbContextFactory.CreateDbContext())
+            using (var applicationDbContext = await _dbContextFactory.CreateDbContextAsync())
             {
-                return applicationDbContext.BlogPosts
-                    .SingleOrDefault(x => x.Id == id);
+                return await applicationDbContext.BlogPosts.SingleOrDefaultAsync(x => x.Id == id);
             }
         }
     }

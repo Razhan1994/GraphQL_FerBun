@@ -18,10 +18,9 @@ namespace BlogPostsManagementSystem.GraphQL
                 FirstName = firstName,
                 LastName = lastName
             };
-            var result = await
-                authorRepository.CreateAuthor(data);
-            await eventSender.SendAsync("AuthorCreated",
-                result);
+            var result = await authorRepository.CreateAuthorAsync(data);
+            await eventSender.SendAsync("AuthorCreated", result);
+
             return result;
         }
     }

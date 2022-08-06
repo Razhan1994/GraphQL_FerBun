@@ -4,51 +4,65 @@ using HotChocolate;
 using HotChocolate.Subscriptions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlogPostsManagementSystem.DTO;
+
 namespace BlogPostsManagementSystem.GraphQL
 {
     public class Query
     {
-        public async Task<List<Author>>
-            GetAllAuthors([Service]
-                IAuthorRepository authorRepository,
-                [Service] ITopicEventSender eventSender)
+        private readonly IAuthorRepository _authorRepository;
+        private readonly IBlogPostRepository _blogPostRepository;
+        private readonly ITopicEventSender _eventSender;
+
+        public Query(IAuthorRepository authorRepository,
+            IBlogPostRepository blogPostRepository,
+            ITopicEventSender eventSender)
         {
-            List<Author> authors =
-                authorRepository.GetAuthors();
-            await eventSender.SendAsync("ReturnedAuthors",
+            _authorRepository = authorRepository;
+            _blogPostRepository = blogPostRepository;
+            _eventSender = eventSender;
+        }
+
+        public async Task<List<Author>> GetAllAuthors()
+        {
+            List<Author> authors = await _authorRepository.GetAllAsync();
+            await _eventSender.SendAsync("ReturnedAuthors",
                 authors);
             return authors;
         }
-        public async Task<Author> GetAuthorById([Service]
-            IAuthorRepository authorRepository,
-            [Service] ITopicEventSender eventSender, int id)
+        public async Task<Author> GetAuthorById(int id)
         {
-            Author author =
-                authorRepository.GetAuthorById(id);
-            await eventSender.SendAsync("ReturnedAuthor",
-                author);
+            Author author = await _authorRepository.GetByIdAsync(id);
+            await _eventSender.SendAsync("ReturnedAuthor", author);
+
             return author;
         }
-        public async Task<List<BlogPost>>
-            GetAllBlogPosts([Service] IBlogPostRepository
-                    blogPostRepository,
-                [Service] ITopicEventSender eventSender)
+        public async Task<List<BlogPost>> GetAllBlogPosts()
         {
-            List<BlogPost> blogPosts =
-                blogPostRepository.GetBlogPosts();
-            await eventSender.SendAsync("ReturnedBlogPosts",
-                blogPosts);
+            List<BlogPost> blogPosts = await _blogPostRepository.GetAllAsync();
+            await _eventSender.SendAsync("ReturnedBlogPosts", blogPosts);
+
             return blogPosts;
         }
-        public async Task<BlogPost> GetBlogPostById([Service]
-            IBlogPostRepository blogPostRepository,
-            [Service] ITopicEventSender eventSender, int id)
+        public async Task<BlogPost> GetBlogPostById(int id)
         {
-            BlogPost blogPost =
-                blogPostRepository.GetBlogPostById(id);
-            await eventSender.SendAsync("ReturnedBlogPost",
-                blogPost);
+            BlogPost blogPost = await _blogPostRepository.GetByIdAsync(id);
+            await _eventSender.SendAsync("ReturnedBlogPost", blogPost);
+
             return blogPost;
+        }
+
+        public async Task<List<BlogAuthor>> GetBlogsWithAuthor()
+        {
+            var blogPosts = await _blogPostRepository.GetAllAsync();
+            var authors = await _authorRepository.GetByIdsAsync(blogPosts.Select(x => x.AuthorId).ToList());
+
+            return blogPosts.Select(x => new BlogAuthor()
+            {
+                BlogPost = x,
+                Author = authors.FirstOrDefault(c => c.Id == x.AuthorId)
+            })
+                .ToList();
         }
     }
 }

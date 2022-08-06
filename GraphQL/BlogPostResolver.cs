@@ -15,11 +15,11 @@ namespace BlogPostsManagementSystem.GraphQL
         {
             _blogPostRepository = blogPostRepository;
         }
-        public IEnumerable<BlogPost> GetBlogPosts(
+        public async Task<IEnumerable<BlogPost>> GetBlogPosts(
             Author author, IResolverContext ctx)
         {
-            return _blogPostRepository.GetBlogPosts()
-                .Where(b => b.AuthorId == author.Id);
+            var blogPosts = await _blogPostRepository.GetAllAsync();
+            return blogPosts.Where(b => b.AuthorId == author.Id);
         }
     }
 }

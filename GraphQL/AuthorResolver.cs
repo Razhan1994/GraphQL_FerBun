@@ -8,16 +8,14 @@ namespace BlogPostsManagementSystem.GraphQL
     public class AuthorResolver
     {
         private readonly IAuthorRepository _authorRepository;
-        public AuthorResolver([Service] IAuthorRepository
-            authorService)
+        public AuthorResolver([Service] IAuthorRepository authorService)
         {
             _authorRepository = authorService;
         }
-        public Author GetAuthor(BlogPost blog,
-            IResolverContext ctx)
+        public async Task<Author> GetAuthor(BlogPost blog, IResolverContext ctx)
         {
-            return _authorRepository.GetAuthors().Where
-                (a => a.Id == blog.AuthorId).FirstOrDefault();
+            var authors = await _authorRepository.GetAllAsync(); 
+            return authors.Where(a => a.Id == blog.AuthorId).FirstOrDefault();
         }
     }
 }
