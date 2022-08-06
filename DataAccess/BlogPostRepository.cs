@@ -1,34 +1,40 @@
 ﻿using BlogPostsManagementSystem.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections.Generic;
+using System.Linq;
 namespace BlogPostsManagementSystem.DataAccess
 {
     public class BlogPostRepository : IBlogPostRepository
     {
-        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
-        public BlogPostRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        private readonly IDbContextFactory
+            <ApplicationDbContext> _dbContextFactory;
+        public BlogPostRepository(IDbContextFactory
+            <ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
-            using (var _applicationDbContext = _dbContextFactory.CreateDbContext())
+            using (var applicationDbContext =
+                   _dbContextFactory.CreateDbContext())
             {
-                _applicationDbContext.Database.EnsureCreated();
+                applicationDbContext.Database
+                    .EnsureCreated();
             }
         }
-
-        public async Task<List<BlogPost>> GetAll()
+        public List<BlogPost> GetBlogPosts()
         {
-            using (var applicationDbContext = await _dbContextFactory.CreateDbContextAsync())
+            using (var applicationDbContext =
+                   _dbContextFactory.CreateDbContext())
             {
-                return await applicationDbContext.BlogPosts.ToListAsync();
+                return applicationDbContext
+                    .BlogPosts.ToList();
             }
         }
-
-        public async Task<BlogPost> GetById(int id)
+        public BlogPost GetBlogPostById(int id)
         {
-            using (var applicationDbContext = await _dbContextFactory.CreateDbContextAsync())
+            using (var applicationDbContext =
+                   _dbContextFactory.CreateDbContext())
             {
-                return await applicationDbContext.BlogPosts.SingleOrDefaultAsync(blogPost => blogPost.Id == id);
+                return applicationDbContext.BlogPosts
+                    .SingleOrDefault(x => x.Id == id);
             }
         }
     }

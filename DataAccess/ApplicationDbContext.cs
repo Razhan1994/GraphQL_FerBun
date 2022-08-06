@@ -14,43 +14,43 @@ namespace BlogPostsManagementSystem.DataAccess
         public DbSet<BlogPost> BlogPosts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Author author1 = new Author()
+            Author author1 = new Author
             {
                 Id = 1,
-                FirstName = "Will",
-                LastName = "Smith"
+                FirstName = "Joydip",
+                LastName = "Kanjilal"
             };
-            Author author2 = new Author()
+            Author author2 = new Author
             {
                 Id = 2,
-                FirstName = "Cristian",
-                LastName = "Anderson"
+                FirstName = "Steve",
+                LastName = "Smith"
             };
-            Author author3 = new Author()
+            Author author3 = new Author
             {
                 Id = 3,
-                FirstName = "Sipan",
-                LastName = "Xelat"
+                FirstName = "Anand",
+                LastName = "Narayanaswamy"
             };
             modelBuilder.Entity<Author>().HasData(author1, author2, author3);
             modelBuilder.Entity<BlogPost>().HasData(
-                new BlogPost()
+                new BlogPost
                 {
                     Id = 1,
-                    Title = "Programming",
+                    Title = "Introducing C# 10.0",
                     AuthorId = 1
                 },
-                new BlogPost()
+                new BlogPost
                 {
                     Id = 2,
-                    Title = "Physic",
+                    Title = "Introducing Entity Framework Core",
                     AuthorId = 2
                 },
-                new BlogPost()
+                new BlogPost
                 {
                     Id = 3,
-                    Title = "Philosophy",
-                    AuthorId = 3
+                    Title = "Introducing Kubernetes",
+                    AuthorId = 1
                 },
                 new BlogPost
                 {

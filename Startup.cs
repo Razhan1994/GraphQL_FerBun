@@ -1,49 +1,51 @@
 ﻿using BlogPostsManagementSystem.DataAccess;
+using BlogPostsManagementSystem.GraphQL;
+using HotChocolate.AspNetCore;
+using HotChocolate.AspNetCore.Playground;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 namespace BlogPostsManagementSystem
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
-        public Startup(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextFactory<ApplicationDbContext>(
                 options => options.UseInMemoryDatabase("BlogsManagement"));
-
-            services.AddScoped<IBlogPostRepository, BlogPostRepository>();
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddInMemorySubscriptions();
+            services.AddScoped<IAuthorRepository,
+                AuthorRepository>();
+            services.AddScoped<IBlogPostRepository,
+                BlogPostRepository>();
+            services
+                .AddGraphQLServer()
+                .AddType<AuthorType>()
+                .AddType<BlogPostType>()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
+                .AddSubscriptionType<Subscription>();
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Configure the HTTP request pipeline.
-            if (!env.IsDevelopment())
+            if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseDeveloperExceptionPage();
+                app.UsePlayground(new PlaygroundOptions
+                {
+                    QueryPath = "/graphql",
+                    Path = "/playground"
+                });
             }
-
-            app.UseDeveloperExceptionPage();
-            app.UseStaticFiles();
-
-            app.UseCookiePolicy();
-
-            app.UseRouting();
-            //app.UseAuthentication();
-
-            //app.UseAuthorization();
-
-            //app.UseEndpoints(r =>
-            //{
-            //    r.MapControllers();
-            //    r.MapDefaultControllerRoute();
-            //});
+            app.UseWebSockets();
+            app
+                .UseRouting()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapGraphQL();
+                });
         }
     }
 }

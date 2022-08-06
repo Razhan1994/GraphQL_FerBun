@@ -4,7 +4,7 @@ namespace BlogPostsManagementSystem.DataAccess
 {
     public interface IBlogPostRepository
     {
-        Task<List<BlogPost>> GetAll();
-        Task<BlogPost> GetById(int id);
+        public List<BlogPost> GetBlogPosts();
+        public BlogPost GetBlogPostById(int id);
     }
 }

@@ -4,8 +4,8 @@ namespace BlogPostsManagementSystem.DataAccess
 {
     public interface IAuthorRepository
     {
-        Task<List<Author>> GetAllAsync();
-        Task<Author> GetByIdAsync(int id);
-        Task<Author> CreateAuthorAsync(Author author);
+        public List<Author> GetAuthors();
+        public Author GetAuthorById(int id);
+        public Task<Author> CreateAuthor(Author author);
     }
 }
