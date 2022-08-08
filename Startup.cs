@@ -25,6 +25,7 @@ namespace BlogPostsManagementSystem
                 .AddType<AuthorType>()
                 .AddType<BlogPostType>()
                 .AddQueryType<Query>()
+                //.AddQueryType<AuthorQuery>()
                 .AddMutationType<Mutation>()
                 .AddSubscriptionType<Subscription>();
         }

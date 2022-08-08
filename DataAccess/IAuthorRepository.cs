@@ -8,5 +8,6 @@ namespace BlogPostsManagementSystem.DataAccess
         public Task<Author> GetByIdAsync(int id);
         public Task<List<Author>> GetByIdsAsync(List<int> ids);
         public Task<Author> CreateAuthorAsync(Author author);
+        Task<Author> GetByName(string name);
     }
 }

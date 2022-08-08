@@ -48,5 +48,16 @@ namespace BlogPostsManagementSystem.DataAccess
                 return author;
             }
         }
+
+        public async Task<Author> GetByName(string name)
+        {
+            using (var applicationDbContext = await _dbContextFactory.CreateDbContextAsync())
+            {
+                var author = await applicationDbContext.Authors.FirstOrDefaultAsync(x =>
+                    x.FirstName.Contains(name) || x.LastName.Contains(name));
+
+                return author;
+            }
+        }
     }
 }
