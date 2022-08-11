@@ -15,8 +15,7 @@ namespace BlogPostsManagementSystem.GraphQL
         {
             _blogPostRepository = blogPostRepository;
         }
-        public async Task<IEnumerable<BlogPost>> GetBlogPosts(
-            Author author, IResolverContext ctx)
+        public async Task<IEnumerable<BlogPost>> GetBlogPosts([Parent] Author author, IResolverContext ctx)
         {
             var blogPosts = await _blogPostRepository.GetAllAsync();
             return blogPosts.Where(b => b.AuthorId == author.Id);
